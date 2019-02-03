@@ -1,4 +1,6 @@
 from db import db
+from flask import jsonify
+
 class PathModel(db.Model):
     __tablename__ = "path"
 
@@ -50,3 +52,25 @@ class CategoryModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    @classmethod
+    def get_distinct_category(cls):
+        distinct = []
+        for item in cls.query.group_by(CategoryModel.category).all():
+            distinct.append((item.id, item.category))
+
+        return distinct
+
+    @classmethod
+    def get_value_by_category_id(cls, category_id):
+        category = CategoryModel.query.filter_by(id=category_id).first().category
+        values = []
+        
+        for item in cls.query.filter_by(category=category).group_by(CategoryModel.value).all():
+            valueDict          = {}
+            valueDict['id']    = item.id
+            valueDict['value'] = item.value
+
+            values.append(valueDict)
+
+        return jsonify({'values': values})

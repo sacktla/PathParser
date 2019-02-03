@@ -5,13 +5,29 @@
     <title>Path Parser</title>
   </head>
   <body>
-    <h1>Path Parser</h1>
-    <h3>Study Name {{result.study}}</h3>
-    <h3>Path {{result.path}}</h3>
-    {% for key in result.data_load.keys() %}
-      <p>Category: {{ key }}</p>
-      <p>Value: {{ result.data_load[key]['value'] }}</p>
-      <p>Data Type {{ result.data_load[key]['data_type'] }}</p>
-    {% endfor %}
+    <form method="POST">
+      {{ form.csrf_token }}
+      {{ form.category }}
+      {{ form.value }}
+      <input type="submit" value="Search">
+    </form>
+    <script>
+      let category_select = document.getElementById('category')
+      let value_select    = document.getElementById('value')
+
+      category_select.onchange = function(){
+        category_id = category_select.value;
+        fetch('/value/' + category_id).then(function(response){
+          response.json().then(function(data){
+            let optionHTML = '';
+            for (let value of data.values){
+              optionHTML += '<option value="' + value.id + '">' + value.value + '</option>';
+            }
+
+            value_select.innerHTML = optionHTML;
+          });
+        });
+      }
+    </script>
   </body>
 </html>
