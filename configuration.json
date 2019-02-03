@@ -1,0 +1,31 @@
+{
+  "study_name":
+  {
+    "root":"root_path",
+    "needs_decomposition": true,
+    "folder_structure":
+    [
+      {
+        "category":"Study Name",
+        "regex":null,
+        "classify":true,
+        "default":"",
+        "data_type":null
+      },
+      {
+        "category":"Assay Name",
+        "regex":null,
+        "classify":true,
+        "default":"",
+        "data_type":null
+      },
+      {
+        "category":"Sample Number",
+        "regex":"bp[0-9]{6}-[0-9]{4}",
+        "classify":true,
+        "default":"",
+        "data_type":null
+      }
+    ]
+  }
+}
