@@ -25,7 +25,6 @@ def parse():
     parser     = PathParser(path, study)
     data_load  = parser.path_dict
 
-
     path_model = PathModel(path)
     if path_model:
         try:
@@ -52,16 +51,31 @@ def parse():
 @app.route('/find', methods=['GET', 'POST'])
 def find():
     form = PathFinderForm()
-    form.category.choices = CategoryModel.get_distinct_category()
+    form.study.choices = CategoryModel.get_distinct_study()
+
+    study_name = form.study.choices[0][1]
+
+    form.category.choices = CategoryModel.get_distinct_category(study_name)
+
+    category = form.category.choices[0][1]
+
+    form.value.choices = CategoryModel.get_distinct_value(category)
+
 
     if request.method == "POST":
-        return "" #This is where i can query the paths and present them
+        study_name, category, value = CategoryModel.get_all_with_id(request.form['value'])
+        path_list = CategoryModel.get_path_list(study_name, category, value)
+        return render_template("display_path.html", result=path_list)
 
     return render_template('display.html', form=form)
 
 @app.route('/value/<category_id>')
 def value(category_id):
     return CategoryModel.get_value_by_category_id(category_id)
+
+@app.route('/category/<study_id>')
+def category(study_id):
+    return CategoryModel.get_category_by_study_id(study_id)
 
 
 if __name__ == "__main__":

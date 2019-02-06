@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Path Parser</title>
+  </head>
+  <body>
+    <h1>Path Parser</h1>
+    <form action='/find' method='GET'>
+      <h2>Paths found:</h2>
+      {% for path in result %}
+      <h3>{{ path }}</h3>
+      {% endfor %}
+      <p><input type='submit' value='Finder'/></p>
+    </form>
+  </body>
+</html>

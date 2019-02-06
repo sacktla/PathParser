@@ -23,8 +23,8 @@ class PathModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find_by_name(cls, path):
-        return cls.query.filter_by(path=path).first()
+    def get_path_name(cls, path_id):
+        return cls.query.filter_by(id=path_id).first().path
 
 
 class CategoryModel(db.Model):
@@ -54,10 +54,27 @@ class CategoryModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def get_distinct_category(cls):
+    def get_distinct_study(cls):
         distinct = []
-        for item in cls.query.group_by(CategoryModel.category).all():
+        for item in cls.query.group_by(CategoryModel.study_name).all():
+            distinct.append((item.id, item.study_name))
+
+        return distinct
+
+    @classmethod
+    def get_distinct_category(cls, study_name):
+        distinct = []
+        for item in cls.query.filter_by(study_name=study_name).group_by(CategoryModel.category).all():
             distinct.append((item.id, item.category))
+
+        return distinct
+
+    @classmethod
+    def get_distinct_value(cls, category):
+        distinct = []
+
+        for item in cls.query.filter_by(category=category).group_by(CategoryModel.value).all():
+            distinct.append((item.id, item.value))
 
         return distinct
 
@@ -65,7 +82,7 @@ class CategoryModel(db.Model):
     def get_value_by_category_id(cls, category_id):
         category = CategoryModel.query.filter_by(id=category_id).first().category
         values = []
-        
+
         for item in cls.query.filter_by(category=category).group_by(CategoryModel.value).all():
             valueDict          = {}
             valueDict['id']    = item.id
@@ -74,3 +91,31 @@ class CategoryModel(db.Model):
             values.append(valueDict)
 
         return jsonify({'values': values})
+
+    @classmethod
+    def get_category_by_study_id(cls, study_id):
+        study = CategoryModel.query.filter_by(id=study_id).first().study_name
+        categories = []
+
+        for item in cls.query.filter_by(study_name=study_name).group_by(CategoryModel.category).all():
+            categoryDict = {}
+            categoryDict['id'] = item.id
+            categoryDict['category'] = item.category
+
+            categories.append(categoryDict)
+
+        return jsonify({'categories': categories})
+
+    @classmethod
+    def get_path_list(cls, study_name, category, value):
+        paths = []
+        for item in cls.query.filter_by(study_name=study_name, \
+                    category=category, value=value).group_by(CategoryModel.path_id):
+                    paths.append(PathModel.get_path_name(item.path_id))
+
+        return paths
+
+    @classmethod
+    def get_all_with_id(cls, id):
+        result = cls.query.filter_by(id=id).first()
+        return (result.study_name, result.category, result.value)
