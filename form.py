@@ -1,6 +1,6 @@
 from model import CategoryModel, PathModel
 from flask_wtf import FlaskForm
-from wtforms import SelectField, BooleanField
+from wtforms import SelectField, BooleanField, SelectMultipleField
 
 class PathFinderForm(FlaskForm):
     study = SelectField('study', choices=[])

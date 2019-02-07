@@ -70,20 +70,22 @@ class CategoryModel(db.Model):
         return distinct
 
     @classmethod
-    def get_distinct_value(cls, category):
+    def get_distinct_value(cls, study_name, category):
         distinct = []
 
-        for item in cls.query.filter_by(category=category).group_by(CategoryModel.value).all():
+        for item in cls.query.filter_by(category=category).filter_by(study_name=study_name).group_by(CategoryModel.value).all():
             distinct.append((item.id, item.value))
 
         return distinct
 
     @classmethod
-    def get_value_by_category_id(cls, category_id):
-        category = CategoryModel.query.filter_by(id=category_id).first().category
+    def get_value_by_category_study_id(cls, study_id, category_id):
+        #How do i reflect both study and category
+        category   = CategoryModel.query.filter_by(id=category_id).first().category
+        study_name = CategoryModel.query.filter_by(id=study_id).first().study_name
         values = []
 
-        for item in cls.query.filter_by(category=category).group_by(CategoryModel.value).all():
+        for item in cls.query.filter_by(study_name=study_name).filter_by(category=category).group_by(CategoryModel.value).all():
             valueDict          = {}
             valueDict['id']    = item.id
             valueDict['value'] = item.value

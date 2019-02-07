@@ -59,7 +59,7 @@ def find():
 
     category = form.category.choices[0][1]
 
-    form.value.choices = CategoryModel.get_distinct_value(category)
+    form.value.choices = CategoryModel.get_distinct_value(study_name, category)
 
 
     if request.method == "POST":
@@ -78,9 +78,9 @@ def find():
 
     return render_template('display.html', form=form)
 
-@app.route('/value/<category_id>')
-def value(category_id):
-    return CategoryModel.get_value_by_category_id(category_id)
+@app.route('/value/<category_id>/<study_id>')
+def value(category_id, study_id):
+    return CategoryModel.get_value_by_category_study_id(study_id, category_id)
 
 @app.route('/category/<study_id>')
 def category(study_id):
