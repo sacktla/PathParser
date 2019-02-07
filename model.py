@@ -116,6 +116,11 @@ class CategoryModel(db.Model):
         return paths
 
     @classmethod
-    def get_all_with_id(cls, id):
+    def get_all_with_id(cls, search_params, search_params_bool):
+        #Get the search params values and then begin search. need to
+        #take care of the fact that result should start with all(?)
+        if search_params_bool[0]:
+            result = cls.query.filter_by()
+        #Loop through search params and filter by that
         result = cls.query.filter_by(id=id).first()
         return (result.study_name, result.category, result.value)

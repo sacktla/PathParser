@@ -63,8 +63,20 @@ def find():
 
 
     if request.method == "POST":
-        study_name, category, value = CategoryModel.get_all_with_id(request.form['value'])
+        form               = PathFinderForm()
+        study_checked      = form.study_checkbox.data
+        study              = form.study.data
+        category_checked   = form.category_checkbox.data
+        category           = form.category.data
+        value_checked      = form.value_checkbox.data
+        value              = form.value.data
+        search_params_bool = [study_checked, category_checked, value_checked]
+        search_params      = [study, category, value]
+        study_name, \
+        category, \
+        value    = CategoryModel.get_all_with_id(search_params, search_params_bool)
         path_list = CategoryModel.get_path_list(study_name, category, value)
+
         return render_template("display_path.html", result=path_list)
 
     return render_template('display.html', form=form)
