@@ -124,9 +124,3 @@ class PathParser:
             path_split.append(tail)
 
         return path_split[::-1]
-
-
-"""
-Testing
-"""
-parser = PathParser("/hello/root_path/study_name/assay_name/sample numberbp123456-1234 other values/hello.txt","study_name")

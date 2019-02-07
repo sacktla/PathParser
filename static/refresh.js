@@ -1,7 +1,9 @@
 let study_select = document.getElementById('study')
 let category_select = document.getElementById('category')
 let value_select    = document.getElementById('value')
-
+//searching display is a little off. need to take into account all parameter
+//upstream frmo change to ensure that the downstream only displays
+//the parameters upstream
 study_select.onchange = function(){
   study_id = study_select.value;
   fetch('/category/' + study_id).then(function(response){

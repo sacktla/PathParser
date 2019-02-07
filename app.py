@@ -72,10 +72,7 @@ def find():
         value              = form.value.data
         search_params_bool = [study_checked, category_checked, value_checked]
         search_params      = [study, category, value]
-        study_name, \
-        category, \
-        value    = CategoryModel.get_all_with_id(search_params, search_params_bool)
-        path_list = CategoryModel.get_path_list(study_name, category, value)
+        path_list          = CategoryModel.get_all_with_id(search_params, search_params_bool)
 
         return render_template("display_path.html", result=path_list)
 

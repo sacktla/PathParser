@@ -94,7 +94,7 @@ class CategoryModel(db.Model):
 
     @classmethod
     def get_category_by_study_id(cls, study_id):
-        study = CategoryModel.query.filter_by(id=study_id).first().study_name
+        study_name = CategoryModel.query.filter_by(id=study_id).first().study_name
         categories = []
 
         for item in cls.query.filter_by(study_name=study_name).group_by(CategoryModel.category).all():
@@ -119,8 +119,20 @@ class CategoryModel(db.Model):
     def get_all_with_id(cls, search_params, search_params_bool):
         #Get the search params values and then begin search. need to
         #take care of the fact that result should start with all(?)
+        result = cls.query
         if search_params_bool[0]:
-            result = cls.query.filter_by()
-        #Loop through search params and filter by that
-        result = cls.query.filter_by(id=id).first()
-        return (result.study_name, result.category, result.value)
+            study_name = cls.query.filter_by(id=search_params[0]).first().study_name
+            result = result.filter_by(study_name=study_name)
+
+        if search_params_bool[1]:
+            category = cls.query.filter_by(id=search_params[1]).first().category
+            result = result.filter_by(category=category)
+
+        if search_params_bool[2]:
+            value = cls.query.filter_by(id=search_params[2]).first().value
+            result = result.filter_by(value=value)
+
+        paths = []
+        for item in result.group_by(CategoryModel.path_id):
+            paths.append(PathModel.get_path_name(item.path_id))
+        return paths
