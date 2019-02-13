@@ -14,7 +14,6 @@ class PathParser:
         self.path      = path
         self.path_dict = {}
 
-        #load json file
         with open(configuration_file) as stream:
             data = json.load(stream)
 

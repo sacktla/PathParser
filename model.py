@@ -70,31 +70,6 @@ class CategoryModel(db.Model):
         return distinct
 
     @classmethod
-    def get_distinct_value(cls, study_name, category):
-        distinct = []
-
-        for item in cls.query.filter_by(category=category).filter_by(study_name=study_name).group_by(CategoryModel.value).all():
-            distinct.append((item.id, item.value))
-
-        return distinct
-
-    @classmethod
-    def get_value_by_category_study_id(cls, study_id, category_id):
-        #How do i reflect both study and category
-        category   = CategoryModel.query.filter_by(id=category_id).first().category
-        study_name = CategoryModel.query.filter_by(id=study_id).first().study_name
-        values = []
-
-        for item in cls.query.filter_by(study_name=study_name).filter_by(category=category).group_by(CategoryModel.value).all():
-            valueDict          = {}
-            valueDict['id']    = item.id
-            valueDict['value'] = item.value
-
-            values.append(valueDict)
-
-        return jsonify({'values': values})
-
-    @classmethod
     def get_category_by_study_id(cls, study_id):
         study_name = CategoryModel.query.filter_by(id=study_id).first().study_name
         categories = []
@@ -109,18 +84,7 @@ class CategoryModel(db.Model):
         return jsonify({'categories': categories})
 
     @classmethod
-    def get_path_list(cls, study_name, category, value):
-        paths = []
-        for item in cls.query.filter_by(study_name=study_name, \
-                    category=category, value=value).group_by(CategoryModel.path_id):
-                    paths.append(PathModel.get_path_name(item.path_id))
-
-        return paths
-
-    @classmethod
     def get_all_with_id(cls, search_params, search_params_bool):
-        #Get the search params values and then begin search. need to
-        #take care of the fact that result should start with all(?)
         result = cls.query
         if search_params_bool[0]:
             study_name = cls.query.filter_by(id=search_params[0]).first().study_name
@@ -128,11 +92,7 @@ class CategoryModel(db.Model):
 
         if search_params_bool[1]:
             category = cls.query.filter_by(id=search_params[1]).first().category
-            result = result.filter_by(category=category)
-
-        if search_params_bool[2]:
-            value = cls.query.filter_by(id=search_params[2]).first().value
-            result = result.filter_by(value=value)
+            result   = result.filter_by(category=category).filter_by(value=search_params[2])
 
         paths = []
         for item in result.group_by(CategoryModel.path_id):
